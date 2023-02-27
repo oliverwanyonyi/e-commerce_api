@@ -13,7 +13,7 @@ dotenv.config();
 // middlewares
 
 app.use(cors({
-  origin:"http://localhost:3000"
+  origin:"https://shopyetu.netlify.app"
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
