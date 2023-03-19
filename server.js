@@ -1,19 +1,22 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const app = express();
 const db = require("./models");
 const imagesRoute = require("./routes/imgRoutes.js");
 const productRoutes = require("./routes/productRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");
+const authRoutes = require('./routes/authRoutes.js')
 
 const { notFound, errorHandler } = require("./middlewares/error");
 dotenv.config();
 
 // middlewares
-
+app.use(cookieParser())
 app.use(cors({
-  origin:"https://shopyetu.netlify.app"
+  origin:"http://localhost:3000",
+  credentials:true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/products", productRoutes);
 app.use("/api/resources", imagesRoute);
 app.use("/api/categories", categoryRoutes);
-
+app.use('/api/auth',authRoutes)
 // error handling
 
 app.use(notFound);
