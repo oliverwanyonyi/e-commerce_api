@@ -28,7 +28,7 @@ router.route("/create").post(async (req, res) => {
     });
   }
   res.status(201).json({ name: product.name });
-});
+})
 
 router.route("/").get(async (req, res) => {
   const products = await Product.findAll({

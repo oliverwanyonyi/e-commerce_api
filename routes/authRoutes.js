@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { genSaltSync, hashSync } = require("bcryptjs");
+const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
 const { Token } = require("../models");
 const db = require("../models");
 const { generateToken } = require("../utils/generateToken");
@@ -8,7 +8,7 @@ const User = db.User;
 router.route("/register").post(async (req, res, next) => {
   try {
     const { email, name, password, phone } = req.body;
-console.log(email);
+    console.log(email);
     let user = await User.findOne({ where: { email } });
     if (user) {
       res.status(400);
@@ -41,11 +41,33 @@ console.log(email);
   }
 });
 
+// login
+
+router.route("/login").post(async (req, res,next) => {
+  try {
+    const { password, email } = req.body;
+    const user = await User.findOne({ where: { email } });
+    // if no user or password don't match
+    if (!user || !compareSync(password, user.password)) {
+      res.status(400);
+      throw new Error("Invalid email or password");
+    }
+    const { access_token, refresh_token } = generateToken(user.id);
+    res.status(200).json({
+      user,
+      access_token,
+      refresh_token,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // refresh token
 
-router.route("/refresh").post(async (req, res, next) => {
+router.route("/token/refresh").post(async (req, res, next) => {
   const token = req.body;
-require('dotenv').config()
+  require("dotenv").config();
   const payload = await jwt.verify(token, process.env.refresh_token_secret);
   if (!payload) {
     res.status(401);
