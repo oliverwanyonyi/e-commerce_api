@@ -6,7 +6,7 @@ const Order = db.Order;
 const OrderItem = db.OrderItem;
 //creating shipping address
 
-router.route("/shipping-address").post(protect, async(req, res, next) => {
+router.route("/shipping-address").post(async(req, res, next) => {
   console.log(req.body);
   try {
     const {
