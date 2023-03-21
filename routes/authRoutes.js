@@ -65,7 +65,8 @@ router.route("/login").post(async (req, res,next) => {
 
 // refresh token
 
-router.route("/token/refresh").post(async (req, res, next) => {
+router.route("/token/refresh").get(async (req, res, next) => {
+  console.log(req.cookies);return
   const token = req.body;
   require("dotenv").config();
   const payload = await jwt.verify(token, process.env.refresh_token_secret);

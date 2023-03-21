@@ -24,8 +24,8 @@ db.Product_Images = require("./Product_Images.js")(sequelize, Sequelize);
 db.Categories = require("./Category.js")(sequelize, Sequelize);
 db.Reviews = require("./Review.js")(sequelize, Sequelize);
 db.Token = require("./Token")(sequelize, Sequelize);
-db.User = require("./User")(sequelize, Sequelize);
 db.ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
+db.User = require("./User")(sequelize, Sequelize);
 db.Order = require('./Order')(sequelize,Sequelize);
 db.OrderItem= require('./OrderItem')(sequelize,Sequelize);
 
