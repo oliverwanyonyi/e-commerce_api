@@ -2,6 +2,7 @@ const { default: slugify } = require("slugify");
 const db = require("../models");
 const Product = db.Product;
 const Categories = db.Categories;
+const Order = db.Order;
 
 const Product_Images = db.Product_Images;
 const router = require("express").Router();
@@ -12,6 +13,7 @@ router.route("/create").post(async (req, res) => {
     name: req.body.name,
     description: req.body.description,
     CategoryId: req.body.category,
+    SubCategoryId:req.body.sub_category,
     discount: req.body.discount,
     countInStock: req.body.countInStock,
     slug: slugify(req.body.name),
@@ -62,4 +64,6 @@ router.route("/:id").get(async (req, res, next) => {
     next(error);
   }
 });
+
+
 module.exports = router;

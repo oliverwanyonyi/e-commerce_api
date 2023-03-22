@@ -1,8 +1,10 @@
 const router = require("express").Router();
 const { genSaltSync, hashSync, compareSync } = require("bcryptjs");
 const { Token } = require("../models");
+const jwt = require('jsonwebtoken');
 const db = require("../models");
 const { generateToken } = require("../utils/generateToken");
+const { protect } = require("../middlewares/authMiddleware");
 const User = db.User;
 
 router.route("/register").post(async (req, res, next) => {
@@ -66,20 +68,41 @@ router.route("/login").post(async (req, res,next) => {
 // refresh token
 
 router.route("/token/refresh").get(async (req, res, next) => {
-  console.log(req.cookies);return
-  const token = req.body;
-  require("dotenv").config();
-  const payload = await jwt.verify(token, process.env.refresh_token_secret);
-  if (!payload) {
-    res.status(401);
-    throw new Error("Session expired Login again!");
-  }
-  const access_token = jwt.sign(
-    { id: payload.id },
-    process.env.access_token_secret,
-    { expiresIn: "1m" }
-  );
-
+ 
+  try {
+    const token = req.cookies?.refresh_token
+    console.log(req.cookies);
+    if(!token) return res.status(403)
+     const payload = await jwt.verify(token, process.env.refresh_token_secret);
+     if (!payload) {
+       res.status(401);
+       throw new Error("Session expired Login again!");
+     }
+     const access_token = jwt.sign(
+       { id: payload.id },
+       process.env.access_token_secret,
+       { expiresIn: "1m" }
+     );
   res.json({ access_token });
+
+    
+  } catch (error) {
+    next(error)
+  }
+ 
+
 });
+
+router.route('/users/update').put(protect,async(req,res,next)=>{
+  try {
+ let user = await User.findOne({where:{id:req.user.id}})
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.phone = req.body.phone;
+    user = await user.save();
+    res.json({user})
+  } catch (error) {
+    next(error)
+  }
+})
 module.exports = router;

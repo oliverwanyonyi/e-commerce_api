@@ -1,15 +1,17 @@
 const Sequelize = require("sequelize");
 require("dotenv").config();
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  // "ecomerce",
-  // "root",
-  // "",
+  // process.env.DB_NAME,
+  // process.env.DB_USER,
+  // process.env.DB_PASSWORD,
+  "ecomerce",
+  "root",
+  "",
   {
-    host: process.env.HOST,
-    dialect: "postgres",
+    // host: process.env.HOST,
+    // dialect: "postgres",
+    host: "localhost",
+    dialect: "mysql",
     logging: false,
   }
 );
@@ -26,11 +28,11 @@ db.Reviews = require("./Review.js")(sequelize, Sequelize);
 db.Token = require("./Token")(sequelize, Sequelize);
 db.ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
 db.User = require("./User")(sequelize, Sequelize);
-db.Order = require('./Order')(sequelize,Sequelize);
-db.OrderItem= require('./OrderItem')(sequelize,Sequelize);
-
+db.Order = require("./Order")(sequelize, Sequelize);
+db.OrderItem = require("./OrderItem")(sequelize, Sequelize);
+db.SubCategories = require("./SubCategory")(sequelize, Sequelize);
 db.Product.hasMany(db.Product_Images, {
-  onDelete: "cascade"
+  onDelete: "cascade",
 });
 db.Product_Images.belongsTo(db.Product);
 db.Product.hasMany(db.Reviews, {
@@ -42,8 +44,13 @@ db.Product.belongsTo(db.Categories);
 db.User.hasMany(db.Token);
 db.Token.belongsTo(db.User);
 db.User.hasMany(db.ShippingAddress);
-db.User.hasMany(db.Order)
-db.Order.belongsTo(db.User)
+db.User.hasMany(db.Order);
+db.Order.belongsTo(db.User);
 db.OrderItem.belongsTo(db.Order);
-db.Order.hasMany(db.OrderItem)
+db.Order.hasMany(db.OrderItem);
+db.Categories.hasMany(db.SubCategories, {
+  onDelete: "cascade",
+});
+db.SubCategories.belongsTo(db.Categories);
+db.SubCategories.hasMany(db.Product)
 module.exports = db;

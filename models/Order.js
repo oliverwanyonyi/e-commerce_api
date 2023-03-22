@@ -1,3 +1,4 @@
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize, Sequelize) => {
   const order = sequelize.define("Order", {
@@ -7,32 +8,35 @@ module.exports = (sequelize, Sequelize) => {
     },
     paid: {
       type: Sequelize.BOOLEAN,
-      defaultValue: false,  
+      defaultValue: false,
     },
     paidAt: {
       type: Sequelize.DATE,
     },
-   
-    delivered:{
-        type:Sequelize.BOOLEAN,
-        defaultValue:false
+
+    delivered: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
+    status: {
+      type: DataTypes.ENUM("placed", "confirmed", "shipped", "delivered","cancelled"),
+      default: "placed",
     },
     deliveredAt: {
       type: Sequelize.DATE,
-     
     },
     orderTotal: {
-      type:Sequelize.DECIMAL(10, 2),
-      allowNull:false,
+      type: Sequelize.DECIMAL(10, 2),
+      allowNull: false,
     },
-    shippingAddress:{
-        type:Sequelize.INTEGER,
-        allowNull:false,
-        references:{
-            model:"shippingaddresses",
-            key:'id'
-        }
-    }
+    shippingAddress: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: "shippingaddresses",
+        key: "id",
+      },
+    },
   });
-  return order
+  return order;
 };

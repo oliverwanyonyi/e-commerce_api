@@ -6,8 +6,7 @@ const Order = db.Order;
 const OrderItem = db.OrderItem;
 //creating shipping address
 
-router.route("/shipping-address").post(async(req, res, next) => {
-  console.log(req.body);
+router.route("/shipping-address").post(protect, async (req, res, next) => {
   try {
     const {
       firstName,
@@ -26,7 +25,7 @@ router.route("/shipping-address").post(async(req, res, next) => {
       DeliveryAddress: deliveryAddress,
       City: city,
       Region: region,
-      userId: 1,
+      userId: req.user.id,
     });
     res.status(201).json(shippingAddress);
   } catch (error) {
@@ -36,11 +35,11 @@ router.route("/shipping-address").post(async(req, res, next) => {
 
 // authorized user shipping addresses
 
-router.route("/shipping-address/all").get(async (req, res, next) => {
+router.route("/shipping-address/all").get(protect, async (req, res, next) => {
   try {
     const shippingAddresses = await ShippingAddress.findAll({
       where: {
-        userId: 1,
+        userId: req.user.id,
       },
     });
 
@@ -52,13 +51,14 @@ router.route("/shipping-address/all").get(async (req, res, next) => {
 
 // create order
 
-router.route("/place").post(async (req, res, next) => {
+router.route("/place").post(protect, async (req, res, next) => {
   try {
     const order = await Order.create({
       paymentMethod: req.body.paymentMethod,
       shippingAddress: req.body.shippingAddress,
       orderTotal: req.body.orderTotal,
-      userId: 1,
+      userId: req.user.id,
+      status: "placed",
     });
 
     for (const item of req.body.orderItems) {
@@ -69,7 +69,7 @@ router.route("/place").post(async (req, res, next) => {
         price: item.price,
         product_display: item.thumb,
         discount: item.discount,
-        quantity:item.quantity
+        quantity: item.quantity,
       });
     }
     res.sendStatus(201);
@@ -78,17 +78,17 @@ router.route("/place").post(async (req, res, next) => {
   }
 });
 
-router.route("/all").get(async (req, res, next) => {
+// authorized user all orders
+router.route("/user/all").get(protect, async (req, res, next) => {
   try {
     let newOrders = [];
     const orders = await Order.findAll({
       where: {
-        userId: 1,
+        userId: req.user.id,
       },
     });
 
     for (let order of orders) {
-      console.log(order);
       const orderItems = await OrderItem.findAll({
         where: { orderId: order.id },
       });
@@ -101,11 +101,24 @@ router.route("/all").get(async (req, res, next) => {
   }
 });
 
-router.route("/:id").get(async (req, res, next) => {
+// all orders
+router.route("/all").get(async (req, res, next) => {
+  try {
+    const orders = await Order.findAll({});
+
+    res.json({ orders });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// authorized user single order
+router.route("/:id").get(protect, async (req, res, next) => {
   try {
     let order = await Order.findOne({
       where: {
         id: req.params.id,
+        userId: req.user.id,
       },
     });
     if (!order) throw new Error("Order not found");
@@ -113,9 +126,38 @@ router.route("/:id").get(async (req, res, next) => {
       where: { OrderId: req.params.id },
     });
     order = { ...order.dataValues, orderItems };
-    res.json({order});
+    res.json({ order });
   } catch (error) {
     next(error);
   }
 });
+// update an order
+router.route("/:id/update").post(async (req, res, next) => {
+  console.log(req.params.id);
+
+  try {
+    const order = await Order.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!order) throw new Error("Order not found");
+    order.paid = +req.body.paymentStatus === 1 ? true : false;
+    console.log(req.body.paymentStatus);
+    if (+req.body.paymentStatus === 1) {
+      order.paidAt = Date.now();
+    }
+    order.status = req.body.status;
+    if (req.body.status === "delivered") {
+      order.status = req.body.status;
+      order.deliveredAt = Date.now();
+      order.delivered = true;
+    }
+    await order.save();
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

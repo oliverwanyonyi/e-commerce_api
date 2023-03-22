@@ -9,6 +9,8 @@ const productRoutes = require("./routes/productRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");
 const authRoutes = require("./routes/authRoutes.js");
 const orderRoutes = require("./routes/orderRoutes.js");
+const analyticsRoutes = require("./routes/analyticsRoutes.js");
+
 const { notFound, errorHandler } = require("./middlewares/error");
 dotenv.config();
 
@@ -31,6 +33,7 @@ app.use("/api/resources", imagesRoute);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
+app.use('/api/analytics',analyticsRoutes)
 // error handling
 
 app.use(notFound);
@@ -41,7 +44,7 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
  
   db.sequelize
-    .sync({force:true})
+    .sync()
     .then(() => {
       console.log("Synced db.");
     })
