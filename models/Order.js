@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const db = require('./models');
+const db = require('./');
 const ShippingAddress = db.ShippingAddress;
 module.exports = (sequelize, Sequelize) => {
   const order = sequelize.define("Order", {
