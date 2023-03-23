@@ -10,7 +10,6 @@ const User = db.User;
 router.route("/register").post(async (req, res, next) => {
   try {
     const { email, name, password, phone } = req.body;
-    console.log(email);
     let user = await User.findOne({ where: { email } });
     if (user) {
       res.status(400);
@@ -71,7 +70,6 @@ router.route("/token/refresh").get(async (req, res, next) => {
  
   try {
     const token = req.cookies?.refresh_token
-    console.log(req.cookies);
     if(!token) return res.status(403)
      const payload = await jwt.verify(token, process.env.refresh_token_secret);
      if (!payload) {

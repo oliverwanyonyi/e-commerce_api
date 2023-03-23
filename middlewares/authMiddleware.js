@@ -11,7 +11,7 @@ exports.protect = async (req, res, next) => {
     // console.log(err)
     if (err) return res.sendStatus(403);
     const user = await User.findOne({ where: { id: payload.id } });
-
+     if(!user) throw new Error("User not found")
     req.user = user;
 
     next();

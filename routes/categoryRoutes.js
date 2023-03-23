@@ -22,7 +22,7 @@ router.route("/create").post(async (req, res, next) => {
 
 
 router.route("/categories&sub-categories").get(async (req, res, next) => {
-  console.log("runing");
+ 
   try {
     let new_categories = [];
     let categories = await Category.findAll();

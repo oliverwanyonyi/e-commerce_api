@@ -52,5 +52,6 @@ db.Categories.hasMany(db.SubCategories, {
   onDelete: "cascade",
 });
 db.SubCategories.belongsTo(db.Categories);
-db.SubCategories.hasMany(db.Product)
+db.SubCategories.hasMany(db.Product);
+db.Product.belongsTo(db.SubCategories)
 module.exports = db;

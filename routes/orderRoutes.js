@@ -81,13 +81,15 @@ router.route("/place").post(protect, async (req, res, next) => {
 // authorized user all orders
 router.route("/user/all").get(protect, async (req, res, next) => {
   try {
+  
     let newOrders = [];
     const orders = await Order.findAll({
       where: {
         userId: req.user.id,
       },
     });
-
+    
+console.log(orders);
     for (let order of orders) {
       const orderItems = await OrderItem.findAll({
         where: { orderId: order.id },

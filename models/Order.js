@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
       defaultValue: false,
     },
     status: {
-      type: DataTypes.ENUM("placed", "confirmed", "shipped", "delivered","cancelled"),
+      type: DataTypes.ENUM("placed", "confirmed", "shipped", "delivered","cancelled","ready for pickup"),
       default: "placed",
     },
     deliveredAt: {
