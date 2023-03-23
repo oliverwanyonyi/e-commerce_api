@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
-
+const db = require('./models');
+const ShippingAddress = db.ShippingAddress;
 module.exports = (sequelize, Sequelize) => {
   const order = sequelize.define("Order", {
     paymentMethod: {
@@ -33,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
-        model: "shippingaddresses",
+        model: ShippingAddress,
         key: "id",
       },
     },
