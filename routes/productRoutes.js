@@ -59,11 +59,7 @@ router.route("/").get(async (req, res,next) => {
       include: [
         {
           model: Review,
-          attributes: [
-            "comment",
-            "rate",
-            "createdAt"
-          ],
+          attributes: [],
         },
         { model: Categories, attributes: ["name"] },
         { model: Product_Images, attributes: ["id", "url"] },
