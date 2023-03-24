@@ -11,7 +11,7 @@ const User = db.User;
 const Product_Images = db.Product_Images;
 const router = require("express").Router();
 
-router.route("/create").post(async (req, res) => {
+router.route("/create").post(async (req, res,next) => {
   try {
     let product = {
       title: req.body.name,
