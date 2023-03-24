@@ -64,7 +64,9 @@ router.route("/").get(async (req, res,next) => {
         { model: Categories, attributes: ["name"] },
         { model: Product_Images, attributes: ["id", "url"] },
       ],
-      group: ['Product.id']
+      group: ['Product.id'],
+      raw: true,
+      nest: true
     });
     res.json(products);
   } catch (error) {
