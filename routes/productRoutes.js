@@ -119,9 +119,9 @@ router.route("/:id").get(async (req, res, next) => {
         { name: "Home", path: "/" },
         {
           name: product?.Category.name,
-          path: "/shop?slug=" + product?.Category.slug,
+          path: "/shop?search_term=" + product?.Category.slug,
         },
-        { name: product?.name, path: "/" + product.id },
+        { name: product?.title, path: "/" + product.id },
       ],
     });
   } catch (error) {

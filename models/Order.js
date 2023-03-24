@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
-const db = require('./');
-const ShippingAddress = db.ShippingAddress;
 module.exports = (sequelize, Sequelize) => {
+const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
+
   const order = sequelize.define("Order", {
     paymentMethod: {
       type: Sequelize.STRING,

@@ -6,7 +6,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   // "ecomerce",
   // "root",
-  // "",
+  "",
   {
     host: process.env.HOST,
     dialect: "postgres",
@@ -53,5 +53,5 @@ db.Categories.hasMany(db.SubCategories, {
 });
 db.SubCategories.belongsTo(db.Categories);
 db.SubCategories.hasMany(db.Product);
-db.Product.belongsTo(db.SubCategories)
+db.Product.belongsTo(db.SubCategories);
 module.exports = db;
