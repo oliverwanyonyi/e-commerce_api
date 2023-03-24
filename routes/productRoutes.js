@@ -36,40 +36,45 @@ router.route("/create").post(async (req, res) => {
 });
 
 router.route("/").get(async (req, res) => {
-  const products = await Product.findAll({
-    attributes: [
-      "id",
-      "title",
-      "description",
-      "price",
-      "countInStock",
-      "slug",
-      "discount",
-      [
-        Sequelize.fn(
-          "COALESCE",
-          Sequelize.fn("AVG", Sequelize.col("reviews.rate")),
-          0
-        ),
-        "averageRating",
-      ],
-      [Sequelize.fn("COUNT", Sequelize.col("reviews.id")), "reviewsCount"],
-    ],
-    include: [
-      {
-        model: Review,
-        attributes: [
-          "comment",
-          "rate",
-          "createdAt"
+  try {
+    const products = await Product.findAll({
+      attributes: [
+        "id",
+        "title",
+        "description",
+        "price",
+        "countInStock",
+        "slug",
+        "discount",
+        [
+          Sequelize.fn(
+            "COALESCE",
+            Sequelize.fn("AVG", Sequelize.col("reviews.rate")),
+            0
+          ),
+          "averageRating",
         ],
-      },
-      { model: Categories, attributes: ["name"] },
-      { model: Product_Images, attributes: ["id", "url"] },
-    ],
-    group: ['Product.id']
-  });
-  res.json(products);
+        [Sequelize.fn("COUNT", Sequelize.col("reviews.id")), "reviewsCount"],
+      ],
+      include: [
+        {
+          model: Review,
+          attributes: [
+            "comment",
+            "rate",
+            "createdAt"
+          ],
+        },
+        { model: Categories, attributes: ["name"] },
+        { model: Product_Images, attributes: ["id", "url"] },
+      ],
+      group: ['Product.id']
+    });
+    res.json(products);
+  } catch (error) {
+    next(error)
+  }
+  
 });
 
 router.route("/:id").get(async (req, res, next) => {
