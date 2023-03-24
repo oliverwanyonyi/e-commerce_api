@@ -1,4 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
+  const User = require("./User")(sequelize, Sequelize);
+
   const reviews = sequelize.define("Review", {
     rate: {
       type: Sequelize.FLOAT,
@@ -11,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
     user: {
       type: Sequelize.INTEGER,
       references: {
-        model: "users",
+        model: User,
         key: "id",
       },
     },
