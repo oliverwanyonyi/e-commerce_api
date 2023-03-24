@@ -2,7 +2,8 @@ const db = require("../models");
 const User = db.User;
 const jwt = require('jsonwebtoken')
 exports.protect = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  try {
+    const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
   
   if (!token) return res.sendStatus(403);
@@ -16,4 +17,8 @@ exports.protect = async (req, res, next) => {
 
     next();
   });
+  } catch (error) {
+    next(error)
+  }
+ 
 };

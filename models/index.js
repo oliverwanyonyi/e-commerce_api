@@ -4,10 +4,15 @@ const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
+  // "ecomerce",
+  // "root",
+  // "",
 
   {
     host: process.env.HOST,
     dialect: "postgres",
+    // host: "localhost",
+    // dialect: "mysql",
     logging: false,
   }
 );
@@ -35,11 +40,12 @@ db.Product.hasMany(db.Reviews, {
   onDelete: "cascade",
 });
 db.Reviews.belongsTo(db.Product);
-db.Categories.hasMany(db.Product);
-db.Product.belongsTo(db.Categories);
+db.Categories.hasMany(db.Product, { foreignKey: "CategoryId" });
+db.Product.belongsTo(db.Categories, { foreignKey: "CategoryId" });
 db.User.hasMany(db.Token);
 db.Token.belongsTo(db.User);
-db.User.hasMany(db.ShippingAddress);
+db.User.hasMany(db.ShippingAddress, { foreignKey: "user_id" });
+db.ShippingAddress.belongsTo(db.User, { foreignKey: "user_id" });
 db.User.hasMany(db.Order);
 db.Order.belongsTo(db.User);
 db.OrderItem.belongsTo(db.Order);
@@ -48,6 +54,9 @@ db.Categories.hasMany(db.SubCategories, {
   onDelete: "cascade",
 });
 db.SubCategories.belongsTo(db.Categories);
-db.SubCategories.hasMany(db.Product);
-db.Product.belongsTo(db.SubCategories);
+db.SubCategories.hasMany(db.Product, { foreignKey: "SubCategoryId" });
+db.Product.belongsTo(db.SubCategories, { foreignKey: "SubCategoryId" });
+db.User.hasMany(db.Reviews, { foreignKey: "user_id" });
+db.Reviews.belongsTo(db.User, { foreignKey: "user_id" });
+
 module.exports = db;

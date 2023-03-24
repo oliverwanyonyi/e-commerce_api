@@ -14,7 +14,12 @@ router.route("/").get(async(req,res,next)=>{
        const userCount = await User.count();
        const productCount = await Product.count();
        const categoriesCount = await Categories.count();
-       const orderTotalAmount = await Order.sum("orderTotal")  || 0
+       const orderTotalAmount = await Order.sum("orderTotal",{
+        where:{
+          paid:true,
+          status:"delivered"
+        }
+       })  || 0
        console.log(orderTotalAmount);
        res.json({
          userCount,productCount,categoriesCount,orderTotalAmount,orderCount

@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { default: slugify } = require("slugify");
 const { protect } = require("../middlewares/authMiddleware");
 const { Sequelize } = require("../models");
@@ -35,9 +36,9 @@ router.route("/create").post(async (req, res) => {
   res.status(201).json({ name: product.name });
 });
 
-router.route("/").get(async (req, res,next) => {
+router.route("/").get(async (req, res, next) => {
   try {
-    const products = await Product.findAll({
+    let products = await Product.findAll({
       attributes: [
         "id",
         "title",
@@ -46,33 +47,37 @@ router.route("/").get(async (req, res,next) => {
         "countInStock",
         "slug",
         "discount",
-        [
-          Sequelize.fn(
-            "COALESCE",
-            Sequelize.fn("AVG", Sequelize.col("reviews.rate")),
-            0
-          ),
-          "averageRating",
-        ],
-        [Sequelize.fn("COUNT", Sequelize.col("reviews.id")), "reviewsCount"],
       ],
       include: [
-        {
-          model: Review,
-          attributes: [],
-        },
         { model: Categories, attributes: ["name"] },
         { model: Product_Images, attributes: ["id", "url"] },
       ],
-      group: ['Product.id'],
-      raw: true,
-      nest: true
     });
+    let newProducts = [];
+    for (let product of products) {
+      const reviewsCount = await Review.count({
+        where: {
+          ProductId: product.id,
+        },
+      });
+      const reviews = await Review.findAll({
+        where: {
+          ProductId: product.id,
+        },
+      });
+      let averageRating = 0;
+      for (const review of reviews) {
+        averageRating += review.rate || 0;
+      }
+      averageRating = averageRating / reviewsCount;
+      product = { ...product.dataValues, reviewsCount, averageRating };
+      newProducts.push(product);
+    }
+    products = newProducts;
     res.json(products);
   } catch (error) {
-    next(error)
+    next(error);
   }
-  
 });
 
 router.route("/:id").get(async (req, res, next) => {
@@ -88,34 +93,80 @@ router.route("/:id").get(async (req, res, next) => {
         "countInStock",
         "slug",
         "discount",
-        [
-          Sequelize.fn(
-            "COALESCE",
-            Sequelize.fn("AVG", Sequelize.col("reviews.rate")),
-            0
-          ),
-          "averageRating",
-        ],
-        [Sequelize.fn("COUNT", Sequelize.col("reviews.id")), "reviewsCount"],
+        "CategoryId",
+        "SubCategoryId",
       ],
 
       include: [
-        {
-          model: Review,
-          attributes: [
-            "comment",
-            "rate",
-            "createdAt"
-          ],
-        },
         { model: Product_Images, attributes: ["id", "url"] },
         { model: Categories, attributes: ["name", "slug", "id"] },
       ],
-      group: ["Product.id","Product_Images.id"],
     });
 
     if (!product) throw new Error("product not found");
 
+    //ratings and reviews
+    const reviewsCount = await Review.count({
+      where: {
+        ProductId: product.id,
+      },
+    });
+    let reviews = await Review.findAll({
+      where: {
+        ProductId: product.id,
+      },
+      attributes: ["createdAt", "id", "rate", "comment"],
+      include: [{ model: User, attributes: ["email"] }],
+    });
+
+    let averageRating = 0;
+    for (const review of reviews) {
+      averageRating += review.rate || 0;
+    }
+    averageRating = averageRating / reviewsCount;
+
+    // related products
+    let newRelatedProducts = [];
+    let relatedProducts = await Product.findAll({
+      where: {
+        [Op.and]: [
+          {
+            [Op.or]: [
+              { SubCategoryId: product.SubCategoryId },
+              { CategoryId: product.CategoryId },
+            ],
+          },
+          { id: { [Op.ne]: req.params.id } },
+        ],
+      },
+      include: [
+        { model: Product_Images, attributes: ["id", "url"] },
+      ]
+    });
+    for (let product of relatedProducts) {
+      const reviewsCount = await Review.count({
+        where: {
+          ProductId: product.id,
+        },
+      });
+
+      let averageRating = 0;
+      for (const review of reviews) {
+        averageRating += review.rate || 0;
+      }
+      averageRating = averageRating / reviewsCount;
+      product = { ...product.dataValues, reviewsCount, averageRating };
+      newRelatedProducts.push(product);
+    }
+    relatedProducts = newRelatedProducts;
+
+    product = {
+      ...product.dataValues,
+      averageRating,
+      reviewsCount,
+      reviews,
+      relatedProducts,
+    };
     res.status(200).json({
       product,
       hierachies: [
@@ -133,10 +184,11 @@ router.route("/:id").get(async (req, res, next) => {
 });
 
 router.route("/:id/rate").post(protect, async (req, res, next) => {
+  console.log(req.params.id);
   try {
     const alreadyReviewed = await Review.findOne({
       where: {
-        user: req.user.id,
+        user_id: req.user.id,
         ProductId: req.params.id,
       },
     });
@@ -145,7 +197,7 @@ router.route("/:id/rate").post(protect, async (req, res, next) => {
     await Review.create({
       rate: req.body.rate,
       comment: req.body.comment,
-      user: req.user.id,
+      user_id: req.user.id,
       ProductId: req.params.id,
     });
     res.sendStatus(201);

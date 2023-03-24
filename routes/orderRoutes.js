@@ -25,7 +25,7 @@ router.route("/shipping-address").post(protect, async (req, res, next) => {
       DeliveryAddress: deliveryAddress,
       City: city,
       Region: region,
-      userId: req.user.id,
+      user_id: req.user.id,
     });
     res.status(201).json(shippingAddress);
   } catch (error) {
@@ -39,7 +39,7 @@ router.route("/shipping-address/all").get(protect, async (req, res, next) => {
   try {
     const shippingAddresses = await ShippingAddress.findAll({
       where: {
-        userId: req.user.id,
+        user_id: req.user.id,
       },
     });
 
@@ -83,7 +83,7 @@ router.route("/user/all").get(protect, async (req, res, next) => {
   try {
   
     let newOrders = [];
-    const orders = await Order.findAll({
+   const orders = await Order.findAll({
       where: {
         userId: req.user.id,
       },
@@ -150,11 +150,16 @@ router.route("/:id/update").post(async (req, res, next) => {
       order.paidAt = Date.now();
     }
     order.status = req.body.status;
+    console.log(req.body.status);
     if (req.body.status === "delivered") {
       order.status = req.body.status;
       order.deliveredAt = Date.now();
       order.delivered = true;
+    }else{
+      order.delivered = false;
+      order.deliveredAt = null
     }
+
     await order.save();
     res.sendStatus(200);
   } catch (error) {
