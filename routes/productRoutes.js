@@ -12,28 +12,32 @@ const Product_Images = db.Product_Images;
 const router = require("express").Router();
 
 router.route("/create").post(async (req, res) => {
-  console.log(req.body);
-  let product = {
-    title: req.body.name,
-    description: req.body.description,
-    CategoryId: req.body.category,
-    SubCategoryId: req.body.sub_category,
-    discount: req.body.discount,
-    countInStock: req.body.countInStock,
-    slug: slugify(req.body.name),
-    price: req.body.price,
-  };
-
-  product = await Product.create(product);
-
-  let img;
-  for (const image of req.body.product_images) {
-    img = await Product_Images.create({
-      ...image,
-      ProductId: product.id,
-    });
+  try {
+    let product = {
+      title: req.body.name,
+      description: req.body.description,
+      CategoryId: req.body.category,
+      SubCategoryId: req.body.sub_category,
+      discount: req.body.discount,
+      countInStock: req.body.countInStock,
+      slug: slugify(req.body.name),
+      price: req.body.price,
+    };
+  
+    product = await Product.create(product);
+  
+    let img;
+    for (const image of req.body.product_images) {
+      img = await Product_Images.create({
+        ...image,
+        ProductId: product.id,
+      });
+    }
+    res.status(201).json({ name: product.title }); 
+  } catch (error) {
+    next(error)
   }
-  res.status(201).json({ name: product.name });
+ 
 });
 
 router.route("/").get(async (req, res, next) => {
