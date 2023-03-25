@@ -53,7 +53,7 @@ const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
   db.sequelize
-    .sync({force:true})
+    .sync()
     .then(() => {
       console.log("Synced db.");
     })
