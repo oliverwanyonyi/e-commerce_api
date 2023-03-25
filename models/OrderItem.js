@@ -1,7 +1,7 @@
 
 module.exports = (sequelize, Sequelize) => {
   const Product = require("./Product")(sequelize, Sequelize);
-
+  const Order = require('./Order')(sequelize,Sequelize);
   const orderItem = sequelize.define("OrderItem", {
 
     itemId: {
@@ -10,6 +10,13 @@ module.exports = (sequelize, Sequelize) => {
         model: Product,
         key: "id",
       },
+    },
+    orderId:{
+      type: Sequelize.INTEGER,
+      references: {
+        model:Order,
+        key: "id",
+      }
     },
     title:{
       type:Sequelize.STRING,

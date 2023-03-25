@@ -69,7 +69,7 @@ router.route("/sub-categories").get(async (req, res, next) => {
   }
 });
 router.route("/sub-categories/:id").get(async (req, res, next) => {
-  console.log("running");
+  
   try {
     const sub_categories = await SubCategory.findAll({
       where: {
