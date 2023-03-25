@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const db = require("../models");
 const { generateToken } = require("../utils/generateToken");
 const { protect } = require("../middlewares/authMiddleware");
+const { addCorsHeaders } = require("../middlewares/corsMiddleWare");
 const User = db.User;
 
 router.route("/register").post(async (req, res, next) => {
@@ -66,7 +67,7 @@ router.route("/login").post(async (req, res,next) => {
 
 // refresh token
 
-router.route("/token/refresh").get(async (req, res, next) => {
+router.route("/token/refresh").get(addCorsHeaders,async (req, res, next) => {
  
   try {
     const token = req.cookies?.refresh_token
