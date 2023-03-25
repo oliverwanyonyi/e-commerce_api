@@ -17,12 +17,20 @@ dotenv.config();
 // middlewares
 
 app.use(cookieParser());
+
+// set up cors
+
 app.use(
   cors({
     origin:[ "http://localhost:3000","https://shopyetu.netlify.app"],
     credentials: true,
+    methods: ['GET', 'POST','PUT','DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   })
 );
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
