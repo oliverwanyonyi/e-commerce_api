@@ -12,7 +12,6 @@ const orderRoutes = require("./routes/orderRoutes.js");
 const analyticsRoutes = require("./routes/analyticsRoutes.js");
 
 const { notFound, errorHandler } = require("./middlewares/error");
-const credentials = require("./middlewares/credentials");
 dotenv.config();
 
 // middlewares
