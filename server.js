@@ -22,12 +22,16 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://shopyetu.netlify.app"],
+    origin: [
+      "http://localhost:3000",
+      "https://shopyetu.netlify.app",
+      "https://shopyetuapi.onrender.com/api",
+    ],
     credentials: true,
   })
 );
-app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
 app.use(express.json());
