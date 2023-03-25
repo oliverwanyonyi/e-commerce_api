@@ -20,9 +20,6 @@ dotenv.config();
 app.use(cookieParser());
 
 
-// handle option credential check befor cors
-
-app.use(credentials)
 
 // set up cors
 
