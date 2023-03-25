@@ -1,8 +1,9 @@
 exports.addCorsHeaders = (req, res, next) => {
     const allowedOrigins = ['http://localhost:3000', 'https://shopyetu.netlify.app'];
     const origin = req.headers.origin;
-    console.log(origin);
     if (allowedOrigins.includes(origin)) {
+        console.log(origin);
+
       res.setHeader('Access-Control-Allow-Origin', origin);
     }
     if (req.method === 'OPTIONS') {

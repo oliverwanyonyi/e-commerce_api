@@ -36,6 +36,7 @@ router.route("/shipping-address").post(protect, async (req, res, next) => {
 // authorized user shipping addresses
 
 router.route("/shipping-address/all").get(protect, async (req, res, next) => {
+  console.log('running');
   try {
     const shippingAddresses = await ShippingAddress.findAll({
       where: {
