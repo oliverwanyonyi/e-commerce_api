@@ -25,7 +25,11 @@ app.use(
     origin:[ "http://localhost:3000","https://shopyetu.netlify.app"],
     credentials: true,
     methods: ['GET', 'POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: true,
+    maxAge: 3600,
+    // Add Access-Control-Allow-Origin header here
+    exposedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin']
   })
 );
 
