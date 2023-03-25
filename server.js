@@ -22,18 +22,20 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin:[ "http://localhost:3000","https://shopyetu.netlify.app"],
+    origin: "*",
     credentials: true,
-    methods: ['GET', 'POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     preflightContinue: true,
     maxAge: 3600,
     // Add Access-Control-Allow-Origin header here
-    exposedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin']
+    exposedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Origin",
+    ],
   })
 );
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,7 +47,7 @@ app.use("/api/resources", imagesRoute);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
-app.use('/api/analytics',analyticsRoutes)
+app.use("/api/analytics", analyticsRoutes);
 // error handling
 
 app.use(notFound);
@@ -54,7 +56,6 @@ app.use(errorHandler);
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
- 
   db.sequelize
     .sync()
     .then(() => {
