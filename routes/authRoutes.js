@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const db = require("../models");
 const { generateToken } = require("../utils/generateToken");
 const { protect } = require("../middlewares/authMiddleware");
-const { addCorsHeaders } = require("../middlewares/corsMiddleWare");
 const User = db.User;
 
 router.route("/register").post(async (req, res, next) => {
