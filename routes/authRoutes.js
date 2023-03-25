@@ -30,6 +30,8 @@ router.route("/register").post(async (req, res, next) => {
     });
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
+      secure:true,
+      sameSite:"None",
       maxAge: 7 * 24 * 60 * 60 * 1000, //expire after 7 days
     });
 
@@ -54,6 +56,12 @@ router.route("/login").post(async (req, res,next) => {
       throw new Error("Invalid email or password");
     }
     const { access_token, refresh_token } = generateToken(user.id);
+    res.cookie("refresh_token", refresh_token, {
+      httpOnly: true,
+      secure:true,
+      sameSite:"None",
+      maxAge: 7 * 24 * 60 * 60 * 1000, //expire after 7 days
+    });
     res.status(200).json({
       user,
       access_token,
@@ -67,7 +75,7 @@ router.route("/login").post(async (req, res,next) => {
 // refresh token
 
 router.route("/token/refresh").get(async (req, res, next) => {
- 
+          
   try {
     
     const token = req.cookies?.refresh_token
