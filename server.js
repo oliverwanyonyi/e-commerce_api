@@ -31,6 +31,7 @@ app.use(
   })
 );
 app.use(function (req, res, next) {
+  res.setHeader('Allow')
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
