@@ -93,7 +93,7 @@ router.route("/user/all").get(protect, async (req, res, next) => {
 console.log(orders);
     for (let order of orders) {
       const orderItems = await OrderItem.findAll({
-        where: { orderId: order.id },
+        where: { OrderId: order.id },
       });
       order = { ...order.dataValues, orderItems };
       newOrders.push(order);

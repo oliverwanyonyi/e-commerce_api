@@ -48,8 +48,8 @@ db.User.hasMany(db.ShippingAddress, { foreignKey: "user_id" });
 db.ShippingAddress.belongsTo(db.User, { foreignKey: "user_id" });
 db.User.hasMany(db.Order);
 db.Order.belongsTo(db.User);
-db.OrderItem.belongsTo(db.Order, { foreignKey: "orderId" });
-db.Order.hasMany(db.OrderItem, { foreignKey: "orderId" });
+db.OrderItem.belongsTo(db.Order);
+db.Order.hasMany(db.OrderItem);
 db.Categories.hasMany(db.SubCategories, {
   onDelete: "cascade",
 });

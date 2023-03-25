@@ -11,13 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
-    orderId:{
-      type: Sequelize.INTEGER,
-      references: {
-        model:Order,
-        key: "id",
-      }
-    },
+   
     title:{
       type:Sequelize.STRING,
       allowNull:false
