@@ -100,6 +100,7 @@ console.log(orders);
     }
     res.json({ orders: newOrders });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
