@@ -67,7 +67,7 @@ router.route("/login").post(async (req, res,next) => {
 
 // refresh token
 
-router.route("/token/refresh").get(addCorsHeaders,async (req, res, next) => {
+router.route("/token/refresh").get(async (req, res, next) => {
  
   try {
     

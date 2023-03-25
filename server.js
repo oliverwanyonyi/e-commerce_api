@@ -12,11 +12,17 @@ const orderRoutes = require("./routes/orderRoutes.js");
 const analyticsRoutes = require("./routes/analyticsRoutes.js");
 
 const { notFound, errorHandler } = require("./middlewares/error");
+const credentials = require("./middlewares/credentials");
 dotenv.config();
 
 // middlewares
 
 app.use(cookieParser());
+
+
+// handle option credential check befor cors
+
+app.use(credentials)
 
 // set up cors
 
@@ -25,16 +31,11 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://shopyetu.netlify.app",
-      "https://shopyetuapi.onrender.com",
     ],
     credentials: true,
   })
 );
-app.use(function (req, res, next) {
-   
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  next();
-});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
