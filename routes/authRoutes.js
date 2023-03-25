@@ -72,6 +72,7 @@ router.route("/token/refresh").get(addCorsHeaders,async (req, res, next) => {
   try {
     
     const token = req.cookies?.refresh_token
+    console.log(token);
     if(!token) return res.status(403)
      const payload = await jwt.verify(token, process.env.refresh_token_secret);
      if (!payload) {
