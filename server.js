@@ -25,7 +25,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://shopyetu.netlify.app",
-      "https://shopyetuapi.onrender.com/api",
+      "https://shopyetuapi.onrender.com",
     ],
     credentials: true,
   })
