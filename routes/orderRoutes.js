@@ -87,7 +87,7 @@ router.route("/user/all").get(protect, async (req, res, next) => {
     let newOrders = [];
    const orders = await Order.findAll({
       where: {
-        UserId: req.user.id,
+        userId: req.user.id,
       },
     });
     
