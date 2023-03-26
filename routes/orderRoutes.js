@@ -61,6 +61,7 @@ router.route("/place").post(protect, async (req, res, next) => {
       userId: req.user.id,
       status: "placed",
     });
+    console.log(order);
 
     for (const item of req.body.orderItems) {
       await OrderItem.create({
