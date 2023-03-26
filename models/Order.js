@@ -1,5 +1,4 @@
 const { DataTypes } = require("sequelize");
-const { User } = require(".");
 module.exports = (sequelize, Sequelize) => {
   const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
   const User = require("./User")(sequelize, Sequelize);
