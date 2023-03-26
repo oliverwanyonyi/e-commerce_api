@@ -114,8 +114,16 @@ router.route('/users/update').put(protect,async(req,res,next)=>{
   }
 })
 
-router.route("/logout").post(async(req,res,next)=>{
+router.route("/logout").post(protect,async(req,res,next)=>{
   try {
+
+    await Token.destroy({
+      where:{
+        userId:req.user.id
+      }
+    })
+    res.clearCookie('refresh_token', { path: '/' });
+    res.sendStatus(200);
       
   } catch (error) {
     next(error)
