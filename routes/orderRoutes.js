@@ -58,7 +58,7 @@ router.route("/place").post(protect, async (req, res, next) => {
       paymentMethod: req.body.paymentMethod,
       shippingAddress: req.body.shippingAddress,
       orderTotal: req.body.orderTotal,
-      UserId: req.user.id,
+      userId: req.user.id,
       status: "placed",
     });
     console.log(order);

@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
+const { User } = require(".");
 module.exports = (sequelize, Sequelize) => {
-const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
-
+  const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
+  const User = require("./User")(sequelize, Sequelize);
   const order = sequelize.define("Order", {
     paymentMethod: {
       type: Sequelize.STRING,
@@ -20,7 +21,14 @@ const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
       defaultValue: false,
     },
     status: {
-      type: DataTypes.ENUM("placed", "confirmed", "shipped", "delivered","cancelled","ready for pickup"),
+      type: DataTypes.ENUM(
+        "placed",
+        "confirmed",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "ready for pickup"
+      ),
       default: "placed",
     },
     deliveredAt: {
@@ -35,6 +43,14 @@ const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
       allowNull: false,
       references: {
         model: ShippingAddress,
+        key: "id",
+      },
+    },
+    userId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
         key: "id",
       },
     },

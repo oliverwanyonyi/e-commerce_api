@@ -46,8 +46,8 @@ db.User.hasMany(db.Token);
 db.Token.belongsTo(db.User);
 db.User.hasMany(db.ShippingAddress, { foreignKey: "user_id" });
 db.ShippingAddress.belongsTo(db.User, { foreignKey: "user_id" });
-db.User.hasMany(db.Order);
-db.Order.belongsTo(db.User);
+db.User.hasMany(db.Order, {foreignKey:"userId"});
+db.Order.belongsTo(db.User, {foreignKey:"userId"});
 db.OrderItem.belongsTo(db.Order);
 db.Order.hasMany(db.OrderItem);
 db.Categories.hasMany(db.SubCategories, {
