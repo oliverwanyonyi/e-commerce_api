@@ -51,8 +51,6 @@ router.route("/").get(async (req, res, next) => {
                 {title:{[Op.iLike]: '%' + req.query.search_term+ '%' }},
                 {description:{[Op.iLike]: '%' + req.query.search_term+ '%' }},
                  {"$Category.slug$":{[Op.iLike]: '%' + req.query.search_term+ '%' }},
-                 {"$SubCategory.slug$":{[Op.iLike]: '%' + req.query.search_term+ '%' }}
-
                ]
       },
       attributes: [
@@ -66,7 +64,6 @@ router.route("/").get(async (req, res, next) => {
       ],
       include: [
         { model: Categories,attributes:["name","slug"] },
-        { model: SubCategory,attributes:["name","slug"] },
         { model: Product_Images, attributes: ["id", "url"] },
       ],
     }:{
