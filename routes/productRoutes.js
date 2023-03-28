@@ -165,7 +165,7 @@ router.route("/:id").get(async (req, res, next) => {
           {
             [Op.or]: [
               { SubCategoryId: product.SubCategoryId },
-              { CategoryId: product.CategoryId },
+              
             ],
           },
           { id: { [Op.ne]: req.params.id } },
