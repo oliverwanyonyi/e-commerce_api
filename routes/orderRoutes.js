@@ -141,8 +141,13 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
 });
 
 router.route("/mpesa/callback").post((req, res, next) => {
-
+  try {
   console.log(req.body);
+    
+  } catch (error) {
+    
+  }
+
   
 });
 
