@@ -65,6 +65,7 @@ router.route("/").get(async (req, res, next) => {
       include: [
         { model: Categories,attributes:["name","slug"] },
         { model: Product_Images, attributes: ["id", "url"] },
+        {model:SubCategory,attributes:['slug']}
       ],
     }:{
       attributes: [
