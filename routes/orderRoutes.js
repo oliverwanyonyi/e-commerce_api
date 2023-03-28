@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const { protect } = require("../middlewares/authMiddleware");
+const { getAuthToken } = require("../middlewares/getAuthToken");
+const axios = require("axios");
 const db = require("../models");
 const ShippingAddress = db.ShippingAddress;
 const Order = db.Order;
 const OrderItem = db.OrderItem;
-//creating shipping address
+require("dotenv").config();
 
 router.route("/shipping-address").post(protect, async (req, res, next) => {
   try {
@@ -36,7 +38,7 @@ router.route("/shipping-address").post(protect, async (req, res, next) => {
 // authorized user shipping addresses
 
 router.route("/shipping-address/all").get(protect, async (req, res, next) => {
-  console.log('running');
+  console.log("running");
   try {
     const shippingAddresses = await ShippingAddress.findAll({
       where: {
@@ -80,18 +82,81 @@ router.route("/place").post(protect, async (req, res, next) => {
   }
 });
 
+//process payment with mpesa
+
+router.route("/pay").post(getAuthToken, async (req, res) => {
+  let amount = req.body.amount;
+  let phoneNumber = req.body.phoneNumber.substring(1);
+  const token = req.token;
+  const auth = "Bearer " + token;
+  const timeStamp = require("../utils/generateTimeStamp")();
+  const url = process.env.lipa_na_mpesa_url;
+  const pass_key = process.env.pass_key;
+  const bs_short_code = process.env.bs_short_code;
+  const password = new Buffer.from(
+    `${bs_short_code}${pass_key}${timeStamp}`
+  ).toString("base64");
+  const transcation_type = "CustomerPayBillOnline";
+  phoneNumber = `254${phoneNumber}`;
+  const partyA = phoneNumber;
+  const partyB = bs_short_code;
+  const callBackUrl = process.env.callback_url;
+  console.log(callBackUrl);
+  const accountReference = "0113513449";
+  const transaction_desc = "test";
+
+  try {
+    const { data } = await axios.post(
+      url,
+      {
+        BusinessShortCode: bs_short_code,
+        Password: password,
+        Timestamp: timeStamp,
+        TransactionType: transcation_type,
+        Amount: amount,
+        PartyA: partyA,
+        PartyB: partyB,
+        PhoneNumber: phoneNumber,
+        CallBackURL: callBackUrl,
+        AccountReference: accountReference,
+        TransactionDesc: transaction_desc,
+      },
+      {
+        headers: {
+          Authorization: auth,
+        },
+      }
+    );
+    return res.send({
+      success: true,
+      message: data,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.send({
+      success: false,
+      message: error.response.data.errorMessage,
+    });
+  }
+});
+
+router.route("/mpesa/callback").post((req, res, next) => {
+
+  console.log(req.body);
+  
+});
+
 // authorized user all orders
 router.route("/user/all").get(protect, async (req, res, next) => {
   try {
-  
     let newOrders = [];
-   const orders = await Order.findAll({
+    const orders = await Order.findAll({
       where: {
         userId: req.user.id,
       },
     });
-    
-console.log(orders);
+
+    console.log(orders);
     for (let order of orders) {
       const orderItems = await OrderItem.findAll({
         where: { OrderId: order.id },
@@ -158,9 +223,9 @@ router.route("/:id/update").post(async (req, res, next) => {
       order.status = req.body.status;
       order.deliveredAt = Date.now();
       order.delivered = true;
-    }else{
+    } else {
       order.delivered = false;
-      order.deliveredAt = null
+      order.deliveredAt = null;
     }
 
     await order.save();

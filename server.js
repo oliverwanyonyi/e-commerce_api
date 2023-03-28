@@ -14,20 +14,19 @@ const analyticsRoutes = require("./routes/analyticsRoutes.js");
 const { notFound, errorHandler } = require("./middlewares/error");
 dotenv.config();
 
+// add io instance to the request object
+
+
+
 // middlewares
 
 app.use(cookieParser());
-
-
 
 // set up cors
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://shopyetu.netlify.app",
-    ],
+   origin:["http://localhost:3000", "https://shopyetu.netlify.app"],
     credentials: true,
   })
 );
@@ -44,6 +43,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/analytics", analyticsRoutes);
 // error handling
+
 
 app.use(notFound);
 app.use(errorHandler);

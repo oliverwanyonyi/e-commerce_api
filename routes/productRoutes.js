@@ -6,6 +6,8 @@ const db = require("../models");
 const Review = db.Reviews;
 const Product = db.Product;
 const Categories = db.Categories;
+const SubCategory = db.SubCategories;
+
 const User = db.User;
 
 const Product_Images = db.Product_Images;
@@ -41,8 +43,18 @@ router.route("/create").post(async (req, res,next) => {
 });
 
 router.route("/").get(async (req, res, next) => {
+  console.log(req.query);
   try {
-    let products = await Product.findAll({
+    let search_term = req.query.search_term ?{
+      where:{
+               [Op.or]:[
+                {title:{[Op.iLike]: '%' + req.query.search_term+ '%' }},
+                {description:{[Op.iLike]: '%' + req.query.search_term+ '%' }},
+                 {"$Category.slug$":{[Op.iLike]: '%' + req.query.search_term+ '%' }},
+                 {"$SubCategory.slug$":{[Op.iLike]: '%' + req.query.search_term+ '%' }}
+
+               ]
+      },
       attributes: [
         "id",
         "title",
@@ -53,10 +65,26 @@ router.route("/").get(async (req, res, next) => {
         "discount",
       ],
       include: [
-        { model: Categories, attributes: ["name"] },
+        { model: Categories,attributes:["name","slug"] },
+        { model: SubCategory,attributes:["name","slug"] },
         { model: Product_Images, attributes: ["id", "url"] },
       ],
-    });
+    }:{
+      attributes: [
+        "id",
+        "title",
+        "description",
+        "price",
+        "countInStock",
+        "slug",
+        "discount",
+      ],
+      include: [
+        { model: Categories, attributes: ["name"], },
+        { model: Product_Images, attributes: ["id", "url"] },
+      ],
+    }
+    let products = await Product.findAll(search_term);
     let newProducts = [];
     for (let product of products) {
       const reviewsCount = await Review.count({
