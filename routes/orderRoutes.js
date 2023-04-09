@@ -128,10 +128,11 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
         },
       }
     );
+  
     await Transaction.create({
       amount,
       phone:partyA,
-      checkoutId:data.message.CheckoutRequestID,
+      checkoutId:data.CheckoutRequestID,
     })
     
     return res.send({
@@ -139,10 +140,10 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
       message: data,
     });
   } catch (error) {
-   
+ 
     return res.send({
       success: false,
-      message: error.response.data.errorMessage,
+      message: error.response?.data?.errorMessage,
     });
   }
 });
