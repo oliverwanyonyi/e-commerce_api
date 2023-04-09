@@ -20,6 +20,9 @@ module.exports = (sequelize,Sequelize)=>{
     },phone:{
         type: Sequelize.STRING,
       allowNull: false, 
+    },
+    transactionId:{
+        type: Sequelize.INTEGER,
     }
     })
 
