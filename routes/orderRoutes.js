@@ -64,7 +64,7 @@ router.route("/place").post(protect, async (req, res, next) => {
       userId: req.user.id,
       status: "placed",
     }
-    if(req.body.paymentMethod === "mpesa"){
+    if(req.body.paymentMethod === "Mpesa"){
       order = {...order,transactionId:req.body.transactionId}
     }
     
