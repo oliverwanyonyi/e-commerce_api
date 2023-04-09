@@ -1,18 +1,18 @@
 const Sequelize = require("sequelize");
 require("dotenv").config();
 const sequelize = new Sequelize(
-  // process.env.DB_NAME,
-  // process.env.DB_USER,
-  // process.env.DB_PASSWORD,
-  "ecomerce",
-  "root",
-  "",
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  // "ecomerce",
+  // "root",
+  // "",
 
   {
-    // host: process.env.HOST,
-    // dialect: "postgres",
-    host: "localhost",
-    dialect: "mysql",
+host: process.env.HOST,
+    dialect: "postgres",
+    // host: "localhost",
+    // dialect: "mysql",
     logging: false,
   }
 );
