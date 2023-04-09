@@ -65,11 +65,11 @@ router.route("/place").post(protect, async (req, res, next) => {
       status: "placed",
     }
     if(req.body.paymentMethod === "Mpesa"){
-      order = {...order,transactionId:req.body.transactionId}
+      order = {...order,transactionId:req.body.transactionId,paid:true,paidAt:Date.now()}
     }
     
-    await Order.create(order);
-    console.log(order);
+    order =  await Order.create(order);
+   
 
     for (const item of req.body.orderItems) {
       await OrderItem.create({
