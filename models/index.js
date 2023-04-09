@@ -61,5 +61,6 @@ db.Product.belongsTo(db.SubCategories, { foreignKey: "SubCategoryId" });
 db.User.hasMany(db.Reviews, { foreignKey: "user_id" });
 db.Reviews.belongsTo(db.User, { foreignKey: "user_id" });
 db.Order.hasOne(db.Transaction,{ foreignKey: "transactionId" })
+db.Transaction.belongsTo(db.Order,{ foreignKey: "transactionId" })
 
 module.exports = db
