@@ -161,13 +161,17 @@ router.route("/mpesa/callback").post( async(req, res, next) => {
   try {
  
     const response = req.body.Body.stkCallback;
-     let Transaction = await Transaction.create()
+    
     if(response.result === 0){
             const data = response.CallbackMetadata.Item;
             const reference = data[1].Value;;
            const transaction = await Transaction.findOne({where:{
               checkoutId:response.CheckoutRequestID
             }})
+
+            console.log("callback working");
+            
+            console.log(transaction);
             transaction.paid = true;
             transaction.reference = reference;
            await transaction.save();
