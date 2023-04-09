@@ -132,7 +132,7 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
       message: data,
     });
   } catch (error) {
-    console.log(error);
+   
     return res.send({
       success: false,
       message: error.response.data.errorMessage,

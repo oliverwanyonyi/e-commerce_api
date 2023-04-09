@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize, Sequelize) => {
   const ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
   const User = require("./User")(sequelize, Sequelize);
+  const Transaction = require('./Transaction')
   const order = sequelize.define("Order", {
     paymentMethod: {
       type: Sequelize.STRING,
@@ -53,6 +54,14 @@ module.exports = (sequelize, Sequelize) => {
         key: "id",
       },
     },
+    transactionId:{
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: {
+        model: Transaction,
+        key: "id",
+      },
+    }
   });
   return order;
 };

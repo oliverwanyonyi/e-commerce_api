@@ -26,10 +26,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-   origin:["http://localhost:3000", "https://shopyetu.netlify.app"],
+  //  origin:["http://localhost:3000", "https://shopyetu.netlify.app"],
+  origin:"*",
     credentials: true,
   })
-);
+)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -30,6 +30,7 @@ db.Token = require("./Token")(sequelize, Sequelize);
 db.ShippingAddress = require("./ShippingAddress")(sequelize, Sequelize);
 db.User = require("./User")(sequelize, Sequelize);
 db.Order = require("./Order")(sequelize, Sequelize);
+db.Transaction = require('./Transaction')(sequelize,Sequelize)
 db.OrderItem = require("./OrderItem")(sequelize, Sequelize);
 db.SubCategories = require("./SubCategory")(sequelize, Sequelize);
 db.Product.hasMany(db.Product_Images, {
@@ -48,6 +49,7 @@ db.User.hasMany(db.ShippingAddress, { foreignKey: "user_id" });
 db.ShippingAddress.belongsTo(db.User, { foreignKey: "user_id" });
 db.User.hasMany(db.Order, {foreignKey:"userId"});
 db.Order.belongsTo(db.User, {foreignKey:"userId"});
+
 db.OrderItem.belongsTo(db.Order);
 db.Order.hasMany(db.OrderItem);
 db.Categories.hasMany(db.SubCategories, {
@@ -58,5 +60,6 @@ db.SubCategories.hasMany(db.Product, { foreignKey: "SubCategoryId" });
 db.Product.belongsTo(db.SubCategories, { foreignKey: "SubCategoryId" });
 db.User.hasMany(db.Reviews, { foreignKey: "user_id" });
 db.Reviews.belongsTo(db.User, { foreignKey: "user_id" });
+db.Order.hasOne(db.Transaction,{ foreignKey: "transactionId" })
 
 module.exports = db;
