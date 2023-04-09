@@ -62,4 +62,4 @@ db.User.hasMany(db.Reviews, { foreignKey: "user_id" });
 db.Reviews.belongsTo(db.User, { foreignKey: "user_id" });
 db.Order.hasOne(db.Transaction,{ foreignKey: "transactionId" })
 
-module.exports = db;
+module.exports = db

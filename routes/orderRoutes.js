@@ -5,6 +5,7 @@ const axios = require("axios");
 const db = require("../models");
 const ShippingAddress = db.ShippingAddress;
 const Order = db.Order;
+const Transaction = db.Transaction
 const OrderItem = db.OrderItem;
 require("dotenv").config();
 
@@ -127,6 +128,12 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
         },
       }
     );
+    await Transaction.create({
+      amount,
+      phone:partyA,
+      checkoutId:data.message.CheckoutRequestID,
+    })
+    
     return res.send({
       success: true,
       message: data,
@@ -140,14 +147,36 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
   }
 });
 
-router.route("/mpesa/callback").post((req, res, next) => {
+
+let message;
+
+
+router.route("/mpesa/callback").post( async(req, res, next) => {
   try {
-  console.log(req.body);
+ 
+    const response = req.body.Body.stkCallback;
+     let Transaction = await Transaction.create()
+    if(response.result === 0){
+            const data = response.CallbackMetadata.Item;
+            const reference = data[1].Value;;
+           const transaction = await Transaction.findOne({where:{
+              checkoutId:response.CheckoutRequestID
+            }})
+            transaction.paid = true;
+            transaction.reference = reference;
+           await transaction.save();
+    }else{
+      message = response.ResultDesc;
+      await Transaction.destroy({
+        where:{
+          checkoutId:response.CheckoutRequestID
+        }
+      })
+    }
     
   } catch (error) {
     
   }
-
   
 });
 

@@ -17,6 +17,9 @@ module.exports = (sequelize,Sequelize)=>{
     amount:{
         type: Sequelize.DECIMAL(10, 2),
       allowNull: false,
+    },phone:{
+        type: Sequelize.STRING,
+      allowNull: false, 
     }
     })
 
