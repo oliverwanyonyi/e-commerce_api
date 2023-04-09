@@ -3,7 +3,6 @@ module.exports = (sequelize,Sequelize)=>{
     const Transaction  =  sequelize.define("Transaction",{
     reference:{
         type:Sequelize.STRING,
-
     },
     paid:{
         type:Sequelize.BOOLEAN,
@@ -20,9 +19,6 @@ module.exports = (sequelize,Sequelize)=>{
     },phone:{
         type: Sequelize.STRING,
       allowNull: false, 
-    },
-    transactionId:{
-        type: Sequelize.INTEGER,
     }
     })
 
