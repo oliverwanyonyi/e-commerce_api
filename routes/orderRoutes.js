@@ -57,13 +57,18 @@ router.route("/shipping-address/all").get(protect, async (req, res, next) => {
 
 router.route("/place").post(protect, async (req, res, next) => {
   try {
-    const order = await Order.create({
+    let order ={
       paymentMethod: req.body.paymentMethod,
       shippingAddress: req.body.shippingAddress,
       orderTotal: req.body.orderTotal,
       userId: req.user.id,
       status: "placed",
-    });
+    }
+    if(req.body.paymentMethod === "mpesa"){
+      order = {...order,transactionId:req.body.transactionId}
+    }
+    
+    await Order.create(order);
     console.log(order);
 
     for (const item of req.body.orderItems) {
@@ -140,7 +145,7 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
       message: data,
     });
   } catch (error) {
- 
+    console.log(error);
     return res.send({
       success: false,
       message: error.response?.data?.errorMessage,
@@ -180,6 +185,26 @@ router.route("/mpesa/callback").post( async(req, res, next) => {
   }
   
 });
+
+router.route('/mpesa/fulfill', ).get(async(req,res,next)=>{
+  try {
+    const transaction = await Transaction.findOne({
+      where:{
+        checkoutId:req.query.checkoutId
+      }
+    })
+    if(transaction){
+      return res.json({
+        transactionId:transaction.id
+      })
+    }
+    res.statusCode = 400
+    throw new Error(message)
+  } catch (error) {
+    next(error)
+  }
+      
+})
 
 // authorized user all orders
 router.route("/user/all").get(protect, async (req, res, next) => {

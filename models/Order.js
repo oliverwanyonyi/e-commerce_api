@@ -56,7 +56,6 @@ module.exports = (sequelize, Sequelize) => {
     },
     transactionId:{
       type: Sequelize.INTEGER,
-      allowNull: false,
       references: {
         model: Transaction,
         key: "id",
