@@ -134,12 +134,12 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
       }
     );
   
-    const tr = await Transaction.create({
+    await Transaction.create({
       amount,
       phone:partyA,
       checkoutId:data.CheckoutRequestID,
     })
-    console.log(tr);
+   
     
     return res.send({
       success: true,
@@ -162,17 +162,15 @@ router.route("/mpesa/callback").post( async(req, res, next) => {
   try {
  
     const response = req.body.Body.stkCallback;
-    console.log(response);  
-    if(response.result === 0){
+     
+    if(response.ResultCode === 0){
             const data = response.CallbackMetadata.Item;
             const reference = data[1].Value;;
            const transaction = await Transaction.findOne({where:{
               checkoutId:response.CheckoutRequestID
             }})
 
-            console.log("callback working");
-            
-            console.log(transaction);
+           
             transaction.paid = true;
             transaction.reference = reference;
            await transaction.save();
