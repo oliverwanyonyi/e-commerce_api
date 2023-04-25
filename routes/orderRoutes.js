@@ -138,8 +138,7 @@ router.route("/pay").post(getAuthToken, async (req, res) => {
       amount,
       phone:partyA,
       checkoutId:data.CheckoutRequestID,
-    })
-   
+    }) 
     
     return res.send({
       success: true,
@@ -169,8 +168,7 @@ router.route("/mpesa/callback").post( async(req, res, next) => {
            const transaction = await Transaction.findOne({where:{
               checkoutId:response.CheckoutRequestID
             }})
-
-           
+    
             transaction.paid = true;
             transaction.reference = reference;
            await transaction.save();

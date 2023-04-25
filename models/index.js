@@ -14,6 +14,7 @@ host: process.env.HOST,
     // host: "localhost",
     // dialect: "mysql",
     logging: false,
+    port:process.env.DB_PORT
   }
 );
 
